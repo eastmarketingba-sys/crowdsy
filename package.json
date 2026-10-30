@@ -1,0 +1,13 @@
+{
+  "name": "crowdsy",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Crowdsy: a social psychology game demo with a multiplayer room. No runtime dependencies.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/deck.test.js tests/archetypes.test.js tests/progress.test.js tests/analytics.test.js tests/scoring.test.js tests/history.test.js tests/room-engine.test.js tests/server.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

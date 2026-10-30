@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="p:domain_verify" content="f5a0d35d2061cbc00e68365372dbb362"/>
+<title>Crowdsy</title>
+<style>
+:root{--bg:#151515;--ink:#F3F1EC;--mute:#8F8E88;--line:#2E2E2C;--lime:#D2FF3A;--soft:#CFCDC6}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+.wrap{max-width:880px;margin:0 auto;padding:28px 16px 56px;min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.brand{font-size:13px;letter-spacing:.24em;font-weight:700;background:none;border:0;color:var(--ink);cursor:pointer;padding:0}
+.brand b{color:var(--lime)}
+.nav{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
+.screen{display:none;flex:1;flex-direction:column}
+.screen.on{display:flex}
+.eyebrow{font-size:12px;letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin:0 0 14px}
+h1{font-family:Georgia,"Iowan Old Style",serif;font-weight:400;font-size:clamp(46px,10vw,104px);line-height:.96;letter-spacing:-.025em;margin:auto 0 22px}
+h1 em{color:var(--lime);font-style:italic}
+h2{font-family:Georgia,"Iowan Old Style",serif;font-weight:400;font-size:clamp(28px,5vw,44px);line-height:1.1;letter-spacing:-.01em;margin:0 0 14px}
+h3{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin:0 0 12px;font-weight:700}
+.lede{font-size:clamp(17px,2.4vw,21px);line-height:1.5;color:var(--soft);max-width:560px;margin:0 0 32px}
+.note{font-size:13px;color:var(--mute);margin:14px 0 0;line-height:1.5}
+.primary{background:var(--lime);color:#111;border:0;padding:18px 30px;font:700 16px "Helvetica Neue",Arial,sans-serif;cursor:pointer;align-self:flex-start;letter-spacing:.01em}
+.primary:disabled{opacity:.28;cursor:not-allowed}
+.ghost{background:none;color:var(--ink);border:1px solid #444;padding:16px 24px;font:600 15px "Helvetica Neue",Arial,sans-serif;cursor:pointer}
+.ghost:hover:not(:disabled){border-color:var(--ink)}
+.ghost:disabled{opacity:.35;cursor:not-allowed}
+.link{background:none;border:0;color:var(--mute);font:500 14px "Helvetica Neue",Arial,sans-serif;text-decoration:underline;cursor:pointer;padding:8px 0}
+.link:hover:not(:disabled){color:var(--ink)}
+a.link-plain{color:var(--ink);text-decoration:underline}
+button:focus-visible,.opt:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:24px}
+.btns .primary{align-self:auto}
+.sample{border-top:1px solid var(--line);padding-top:24px;margin-top:44px;max-width:560px}
+.sq{font-family:Georgia,serif;font-size:22px;margin:0 0 16px}
+.challenge{border:1px solid var(--lime);padding:16px 18px;margin:0 0 24px;max-width:560px}
+.challenge p{margin:0 0 12px;color:var(--soft);font-size:15px;line-height:1.5}
+.notice{border:1px solid #5a2a24;background:#2a1a18;color:#FFB4A8;padding:12px 14px;font-size:14px;margin:0 0 18px;line-height:1.5}
+.progress{height:2px;background:var(--line);margin-bottom:22px}
+.progress i{display:block;height:100%;width:0;background:var(--lime);transition:width .4s ease}
+.meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;font-size:12px;letter-spacing:.18em;color:var(--mute);margin-bottom:36px}
+.meta strong{color:var(--ink);font-weight:700}
+.card{flex:1;display:flex;flex-direction:column;transition:opacity .2s ease,transform .2s ease}
+.card.out{opacity:0;transform:translateY(8px)}
+.topline{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-bottom:14px}
+.cat{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin:0}
+.stage{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0}
+.qtext{font-family:Georgia,"Iowan Old Style",serif;font-weight:400;font-size:clamp(30px,6vw,50px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;outline:none}
+.hint{color:var(--soft);font-size:16px;margin:0 0 26px}
+.yours{color:var(--mute);font-size:14px;margin:-14px 0 24px}
+.opts{display:grid;gap:12px;margin-bottom:26px}
+.opt{display:block;width:100%;text-align:left;background:none;border:1px solid var(--line);color:var(--ink);padding:20px 24px;font:500 clamp(18px,3vw,23px) "Helvetica Neue",Arial,sans-serif;cursor:pointer;transition:background .15s,color .15s,border-color .15s,opacity .2s}
+.opt:hover:not(:disabled){border-color:#5A5A56}
+.opt[aria-pressed="true"]{background:var(--lime);color:#111;border-color:var(--lime)}
+.opt:disabled{cursor:default}
+.opts.locked .opt:not([aria-pressed="true"]){opacity:.3}
+.actions{display:flex;flex-wrap:wrap;align-items:center}
+.verdict{font-family:Georgia,serif;font-size:clamp(28px,5vw,40px);margin:0 0 10px}
+.verdict.win{color:var(--lime)}
+.pick{color:var(--soft);margin:0 0 24px;font-size:16px;line-height:1.5}
+.row{margin-bottom:20px}
+.lbl{display:flex;justify-content:space-between;gap:12px;font-size:18px;margin-bottom:8px}
+.pct{font-variant-numeric:tabular-nums;font-weight:700}
+.track{height:14px;background:var(--line);position:relative}
+.fill{height:100%;width:0;background:#E9E7E1;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.fill.maj{background:var(--lime)}
+.why{border-left:2px solid var(--lime);padding-left:14px;color:var(--soft);font-size:15px;line-height:1.5;margin:24px 0 0}
+.why small{display:block;color:var(--mute);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.demo{font-size:12px;color:var(--mute);margin:0 0 6px;letter-spacing:.02em}
+.final-score{font-family:Georgia,serif;font-size:clamp(60px,14vw,120px);line-height:1;margin:8px 0 6px;letter-spacing:-.03em}
+.final-score small{font-size:.3em;color:var(--mute);letter-spacing:0}
+.stats{color:var(--soft);font-size:16px;margin:0 0 10px}
+.acc{height:8px;background:var(--line);margin:20px 0 22px}
+.acc i{display:block;height:100%;width:0;background:var(--lime);transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.dots{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-bottom:10px}
+.dot{aspect-ratio:1;border:1px solid #555}
+.dot.ok{background:var(--lime);border-color:var(--lime)}
+.dot.no{background:#2A2A28}
+.block{border-top:1px solid var(--line);padding-top:24px;margin-top:28px}
+.arch-name{font-family:Georgia,serif;font-size:clamp(34px,7vw,60px);line-height:1;color:var(--lime);margin:0 0 12px}
+.arch-sentence{font-family:Georgia,serif;font-size:clamp(20px,3vw,26px);line-height:1.35;margin:0 0 10px;max-width:640px}
+.confidence{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #555;padding:5px 9px;color:var(--soft);margin-top:6px}
+.dim{margin-bottom:20px}
+.dim-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap;font-size:16px}
+.dim-head b{font-weight:700}
+.dim-def{font-size:14px;color:var(--mute);margin:6px 0 10px;line-height:1.5}
+.dim-meta{font-size:12px;color:var(--mute);margin:6px 0 0;letter-spacing:.02em}
+.range{position:absolute;top:0;bottom:0;background:rgba(243,241,236,.18)}
+.tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.example{border-left:2px solid #444;padding:4px 0 4px 14px;margin:0 0 14px;color:var(--soft);font-size:15px;line-height:1.5}
+.example q{color:var(--ink)}
+.pattern{font-size:17px;line-height:1.5;margin:0}
+.reflect{font-family:Georgia,serif;font-size:20px;line-height:1.4;margin:0}
+.card-share{background:var(--bg);border:1px solid #3A3A37;padding:28px;max-width:440px;aspect-ratio:4/5;display:flex;flex-direction:column;justify-content:space-between;margin-bottom:8px}
+.card-share .c-brand{font-size:12px;letter-spacing:.24em;font-weight:700}
+.card-share .c-brand b{color:var(--lime)}
+.card-share .c-arch{font-family:Georgia,serif;font-size:clamp(30px,7vw,44px);line-height:1.02;color:var(--lime);margin:0}
+.card-share .c-insight{font-family:Georgia,serif;font-size:clamp(17px,3.2vw,21px);line-height:1.35;margin:0}
+.card-share .c-scores{font-size:13px;color:var(--soft);line-height:1.6;margin:0}
+.card-share .c-foot{font-size:12px;color:var(--mute);letter-spacing:.04em;margin:0}
+.list{list-style:none;padding:0;margin:0}
+.list li{border-bottom:1px solid var(--line);padding:14px 0}
+.list li:first-child{border-top:1px solid var(--line)}
+details summary{cursor:pointer;color:var(--soft);font-size:15px;padding:6px 0}
+details p{font-size:14px;color:var(--soft);line-height:1.5}
+.feedback{font-size:14px;color:var(--soft);min-height:20px;margin:14px 0 0}
+.empty{color:var(--mute);font-size:16px;line-height:1.5;margin:12px 0 0}
+@media (max-width:520px){
+  .wrap{padding:20px 16px 40px}
+  .opt{padding:18px}
+  .primary,.ghost{width:100%;text-align:center}
+  .btns{flex-direction:column;align-items:stretch}
+  .dots{gap:5px}
+  .card-share{aspect-ratio:auto;min-height:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="homeBtn" type="button">CROWD<b>SY</b></button>
+    <nav class="nav" aria-label="Main">
+      <button class="link" id="navProfile" type="button">Profile</button>
+      <button class="link" id="navHistory" type="button">History</button>
+      <a class="link-plain" href="room.html">Play with friends</a>
+    </nav>
+  </header>
+
+  <!-- Landing -->
+  <section id="landing" class="screen on" aria-labelledby="h-land">
+    <p class="eyebrow">Demo V2.0 · No sign-up · Simulated crowd data</p>
+    <h1 id="h-land">You know people. <em>Prove it.</em></h1>
+    <p class="lede">Make your own choice, then predict what the crowd chose. Ten questions, one score, and a read on how you think about other people.</p>
+    <div id="challengeBanner" class="challenge" hidden>
+      <p>A friend sent you a fixed set of 10 questions. Their result is not shown here.</p>
+      <button class="ghost" id="challengeStart" type="button">Start the challenge</button>
+    </div>
+    <div class="btns">
+      <button class="primary" id="startBtn" type="button">Play 10 questions</button>
+      <button class="ghost" id="dailyBtn" type="button">Today's challenge</button>
+    </div>
+    <p class="note" id="dailyNote"></p>
+    <div class="sample">
+      <p class="eyebrow">Sample question</p>
+      <p class="sq" id="sampleQ"></p>
+      <div id="sampleBars"></div>
+      <p class="note">Demo: the percentages are simulated, not real survey results.</p>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="screen" aria-label="Game">
+    <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+    <div class="meta"><span id="qnum"></span><span id="score"></span><span id="streak"></span></div>
+    <div class="card" id="card">
+      <div id="qView">
+        <div class="topline"><p class="cat" id="cat"></p><p class="stage" id="stage"></p></div>
+        <h2 class="qtext" id="qtext" tabindex="-1"></h2>
+        <p class="hint" id="hint"></p>
+        <p class="yours" id="yours" hidden></p>
+        <div class="opts" id="opts" role="group" aria-label="Answer options"></div>
+        <div class="actions">
+          <button class="primary" id="lockBtn" type="button" disabled>Lock my choice</button>
+          <button class="link" id="skipBtn" type="button" style="margin-left:18px">Skip question</button>
+        </div>
+        <p class="note">Keys 1 to 4 pick an answer. Skipped questions count as neither correct nor incorrect.</p>
+      </div>
+      <div id="rView" hidden>
+        <p class="cat" style="margin-bottom:14px">Crowd reveal</p>
+        <p class="verdict" id="verdict" role="status"></p>
+        <p class="pick" id="pick"></p>
+        <p class="demo">Simulated demo data. Not real survey results.</p>
+        <div id="bars"></div>
+        <div id="why" class="why" hidden></div>
+        <div class="btns"><button class="primary" id="nextBtn" type="button"></button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="final" class="screen" aria-label="Your results">
+    <p class="eyebrow" id="resultEyebrow">Your result</p>
+    <div class="final-score" id="fScore"></div>
+    <p class="stats" id="fStats"></p>
+    <p class="stats" id="fChoices"></p>
+    <div class="acc" aria-hidden="true"><i id="fAccBar"></i></div>
+    <div class="dots" id="dots" aria-label="Question results"></div>
+
+    <div class="block">
+      <h3>Your archetype</h3>
+      <p class="arch-name" id="archName"></p>
+      <p class="arch-sentence" id="archSentence"></p>
+      <span class="confidence" id="archConfidence"></span>
+      <p class="note" id="archStatus"></p>
+    </div>
+
+    <div class="block">
+      <h3>Measured dimensions</h3>
+      <p class="note" style="margin:0 0 18px">Comparisons use simulated crowd data. Bars show your score; the lighter band is the 95% range.</p>
+      <div id="resDims"></div>
+    </div>
+
+    <div class="block">
+      <h3>Strongest pattern</h3>
+      <p class="pattern" id="resStrong"></p>
+    </div>
+    <div class="block">
+      <h3>Unexpected finding</h3>
+      <p class="pattern" id="resContra"></p>
+    </div>
+    <div class="block">
+      <h3>From your answers</h3>
+      <div id="resExamples"></div>
+    </div>
+    <div class="block">
+      <h3>Possible blind spot</h3>
+      <p class="pattern" id="resBlind"></p>
+      <h3 style="margin-top:24px">Reflective question</h3>
+      <p class="reflect" id="resQ"></p>
+    </div>
+
+    <div class="block">
+      <h3>Share card</h3>
+      <div class="card-share" id="shareCard" aria-label="Shareable result card">
+        <p class="c-brand">CROWD<b>SY</b></p>
+        <div>
+          <p class="c-arch" id="cardArch"></p>
+        </div>
+        <p class="c-insight" id="cardInsight"></p>
+        <p class="c-scores" id="cardScores"></p>
+        <p class="c-foot">Discover your own profile at Crowdsy.</p>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="againBtn" type="button">Play again</button>
+      <button class="ghost" id="profileBtn" type="button">View profile</button>
+      <button class="ghost" id="shareBtn" type="button">Share my results</button>
+      <button class="ghost" id="challengeBtn" type="button">Challenge a friend</button>
+    </div>
+    <p id="shareMsg" class="feedback" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- Profile -->
+  <section id="profile" class="screen" aria-labelledby="profTitle">
+    <p class="eyebrow">Player profile</p>
+    <h2 id="profTitle">How you read people</h2>
+    <div id="dataNotice" class="notice" hidden></div>
+    <div id="profEmpty" class="empty" hidden>No sessions yet. Play your first 10 questions and your profile will start to build.</div>
+    <div id="profBody" hidden>
+      <p class="note" id="profMeta"></p>
+      <div class="block">
+        <h3>Current archetype</h3>
+        <p class="arch-name" id="profArch" style="font-size:clamp(30px,6vw,46px)"></p>
+        <p class="note" id="profArchStatus"></p>
+      </div>
+      <div class="block">
+        <h3>Dimensions</h3>
+        <div id="profDims"></div>
+      </div>
+      <div class="block">
+        <h3>Prediction accuracy</h3>
+        <p class="pattern" id="profAcc"></p>
+      </div>
+      <div class="block">
+        <h3>Discoveries</h3>
+        <ul class="list" id="profUnlocks"></ul>
+      </div>
+      <div class="block">
+        <h3>Archetypes you have seen</h3>
+        <ul class="list" id="profArchs"></ul>
+      </div>
+      <p class="note">Gameplay scores can change from session to session. A change in score is not, by itself, a change in personality. Results are demo comparisons with simulated crowd data, not a validated psychological assessment.</p>
+    </div>
+    <details class="block">
+      <summary>How archetypes are assigned</summary>
+      <ul class="list" id="ruleList" style="margin-top:12px"></ul>
+    </details>
+    <div class="btns">
+      <button class="ghost" id="profBackBtn" type="button">Back</button>
+      <button class="ghost" id="resetBtn" type="button">Reset local profile</button>
+    </div>
+    <p id="resetMsg" class="feedback" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- History -->
+  <section id="history" class="screen" aria-labelledby="histTitle">
+    <p class="eyebrow">Session history</p>
+    <h2 id="histTitle">Earlier results</h2>
+    <div id="histNotice" class="notice" hidden></div>
+    <div id="histEmpty" class="empty" hidden>No finished sessions yet.</div>
+    <ul class="list" id="histList"></ul>
+    <div class="btns"><button class="ghost" id="histBackBtn" type="button">Back</button></div>
+  </section>
+</div>
+
+<script src="questions.js"></script>
+<script src="dimensions.js"></script>
+<script src="history.js"></script>
+<script src="scoring.js"></script>
+<script src="deck.js"></script>
+<script src="archetypes.js"></script>
+<script src="progress.js"></script>
+<script src="analytics.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ROUND = DECK_ROUND, PTS = 100, MAX_SKIPS = 2;
+const PAGE_URL = window.location.href.split('?')[0].split('#')[0];
+
+// ---- Session state ----
+// Personal choices and crowd predictions are stored in separate fields. Only predictions are scored.
+let deck = [], deckMode = 'solo', cursor = 0, records = [], skipsLeft = MAX_SKIPS;
+let stage = 'choose', pick = null, locked = false, busy = false;
+let score = 0, correct = 0, streak = 0, best = 0, skipped = 0;
+let challengeDeck = null; // validated deck from a ?deck= link
+
+// ---- Storage helpers ----
+function store() { try { return window.localStorage; } catch (e) { return null; } }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function storageState() {
+  const s = store();
+  if (!s) return { available: false, corrupt: false };
+  try {
+    const raw = s.getItem(HISTORY_KEY);
+    if (!raw) return { available: true, corrupt: false };
+    try { JSON.parse(raw); return { available: true, corrupt: false }; }
+    catch (e) { return { available: true, corrupt: true }; }
+  } catch (e) {
+    return { available: false, corrupt: false };
+  }
+}
+function sessionsNow() { return loadSessions(store()); }
+function pct(x) { return Math.round(x * 100) + '%'; }
+
+// ---- Screen helpers ----
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  window.scrollTo(0, 0);
+}
+function swap(fn) {
+  busy = true;
+  const card = $('card');
+  const done = () => { fn(); card.classList.remove('out'); busy = false; };
+  if (REDUCED) return done();
+  card.classList.add('out');
+  setTimeout(done, 200);
+}
+function drawBars(el, q, animate) {
+  const maj = q.v.indexOf(Math.max(...q.v));
+  el.innerHTML = '';
+  q.o.forEach((label, i) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    const lbl = document.createElement('div');
+    lbl.className = 'lbl';
+    const name = document.createElement('span');
+    name.textContent = label;
+    const p = document.createElement('span');
+    p.className = 'pct';
+    p.textContent = q.v[i] + '%';
+    lbl.append(name, p);
+    const track = document.createElement('div');
+    track.className = 'track';
+    const fill = document.createElement('div');
+    fill.className = 'fill' + (i === maj ? ' maj' : '');
+    fill.dataset.w = q.v[i];
+    track.appendChild(fill);
+    row.append(lbl, track);
+    el.appendChild(row);
+  });
+  const fills = [...el.querySelectorAll('.fill')];
+  const apply = () => fills.forEach(f => { f.style.width = f.dataset.w + '%'; });
+  if (!animate || REDUCED) apply();
+  else requestAnimationFrame(() => requestAnimationFrame(apply));
+}
+function renderOptions(q, onPick) {
+  const opts = $('opts');
+  opts.classList.remove('locked');
+  opts.textContent = '';
+  q.o.forEach((label, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt';
+    b.textContent = label;
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => onPick(i));
+    opts.appendChild(b);
+  });
+}
+function setPressed(i) {
+  document.querySelectorAll('#opts .opt').forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
+}
+function updateHud() {
+  $('score').innerHTML = `Score <strong>${score}</strong>`;
+  $('streak').innerHTML = `Streak <strong>${streak}</strong>`;
+}
+function current() { return deck[cursor]; }
+
+// ---- Game flow ----
+function startGame(mode) {
+  deckMode = mode || 'solo';
+  if (deckMode === 'challenge' && challengeDeck) deck = challengeDeck;
+  else if (deckMode === 'daily') deck = seededDeck(QUESTION_BANK, dailySeed(todayStr()), DECK_POOL);
+  else { deckMode = 'solo'; deck = buildDeck(QUESTION_BANK, Math.random, DECK_POOL); }
+  cursor = 0; records = []; skipsLeft = MAX_SKIPS; skipped = 0;
+  score = 0; correct = 0; streak = 0; best = 0;
+  Analytics.track('game_start', { mode: deckMode });
+  if (sessionsNow().length > 0 && !window.__returningTracked) {
+    window.__returningTracked = true;
+    Analytics.track('returning_session');
+  }
+  show('game');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = current();
+  stage = 'choose'; pick = null; locked = false;
+  $('qView').hidden = false;
+  $('rView').hidden = true;
+  $('qnum').innerHTML = `Question <strong>${String(records.length + 1).padStart(2, '0')}</strong> / ${ROUND}`;
+  $('prog').style.width = (records.length / ROUND * 100) + '%';
+  $('cat').textContent = q.cat;
+  $('stage').textContent = 'Step 1 of 2 · Your choice';
+  $('qtext').textContent = q.q;
+  $('hint').textContent = 'What would you choose?';
+  $('yours').hidden = true;
+  renderOptions(q, selectPick);
+  $('lockBtn').textContent = 'Lock my choice';
+  $('lockBtn').disabled = true;
+  $('skipBtn').hidden = skipsLeft === 0;
+  $('skipBtn').disabled = false;
+  $('skipBtn').textContent = `Skip question (${skipsLeft} left)`;
+  updateHud();
+  $('qtext').focus({ preventScroll: true });
+}
+
+function selectPick(i) {
+  if (locked || busy) return;
+  pick = i;
+  setPressed(i);
+  $('lockBtn').disabled = false;
+}
+
+function lockIn() {
+  if (pick === null || locked || busy) return;
+  const q = current();
+
+  if (stage === 'choose') {
+    const personalChoice = pick;
+    stage = 'predict';
+    pick = null;
+    $('skipBtn').hidden = true;
+    swap(() => {
+      $('stage').textContent = 'Step 2 of 2 · Crowd prediction';
+      $('hint').textContent = 'Which option do you think got the most votes?';
+      $('yours').hidden = false;
+      $('yours').textContent = `Your choice: ${q.o[personalChoice]}`;
+      $('lockBtn').textContent = 'Lock in prediction';
+      $('lockBtn').disabled = true;
+      renderOptions(q, selectPick);
+      records.push({ id: q.id, cat: q.cat, personalChoice, predictedChoice: null, majority: null, correct: null });
+    });
+    return;
+  }
+
+  locked = true;
+  $('lockBtn').disabled = true;
+  $('opts').classList.add('locked');
+  document.querySelectorAll('#opts .opt').forEach(b => { b.disabled = true; });
+  const rec = records[records.length - 1];
+  const predictedChoice = pick;
+  const maj = q.v.indexOf(Math.max(...q.v));
+  const ok = predictedChoice === maj;
+  rec.predictedChoice = predictedChoice;
+  rec.majority = maj;
+  rec.correct = ok;
+  if (ok) { score += PTS; correct++; streak++; best = Math.max(best, streak); }
+  else streak = 0;
+  Analytics.track('question_complete', { outcome: 'answered' });
+
+  swap(() => {
+    $('qView').hidden = true;
+    $('rView').hidden = false;
+    const verdict = $('verdict');
+    verdict.textContent = ok ? `Correct. +${PTS} points.` : 'Not this time. +0 points.';
+    verdict.className = 'verdict' + (ok ? ' win' : '');
+    $('pick').textContent = `Your choice: ${q.o[rec.personalChoice]}. Your prediction: ${q.o[predictedChoice]}. Crowd majority: ${q.o[maj]} at ${q.v[maj]}%.`;
+    drawBars($('bars'), q, true);
+    const why = $('why');
+    why.textContent = '';
+    const tag = document.createElement('small');
+    tag.textContent = 'Why this question is interesting';
+    why.append(tag, document.createTextNode(q.why));
+    if (q.follow) {
+      const f = document.createElement('p');
+      f.style.margin = '10px 0 0';
+      f.textContent = 'Discuss: ' + q.follow;
+      why.appendChild(f);
+    }
+    why.hidden = false;
+    $('nextBtn').textContent = records.length === ROUND ? 'See my results' : 'Next question';
+    updateHud();
+    $('nextBtn').focus({ preventScroll: true });
+  });
+}
+
+function skip() {
+  if (busy || locked || stage !== 'choose' || skipsLeft === 0) return;
+  skipsLeft--;
+  skipped++;
+  cursor++;
+  Analytics.track('question_complete', { outcome: 'skipped' });
+  swap(renderQuestion);
+}
+
+function next() {
+  if (busy) return;
+  if (records.length >= ROUND) return finishSession();
+  cursor++;
+  swap(renderQuestion);
+}
+
+// ---- Results ----
+function finishSession() {
+  const at = new Date().toISOString();
+  const sessionRecords = records.slice();
+  const prior = sessionsNow();
+  const profile = computeProfile(allRecords(prior).concat(sessionRecords), QUESTION_BANK, DIMENSION_MAP, DIMENSION_RULES, DATA_SOURCE);
+  const assignment = assignArchetype(profile);
+  const results = buildResults(profile, sessionRecords, QUESTION_BANK, DIMENSION_MAP, assignment);
+  const answered = sessionRecords.length;
+  const acc = answered ? Math.round(correct / answered * 100) : 0;
+  const summary = {
+    score, correct, answered, skipped, best, accuracy: acc,
+    archetype: assignment.archetype ? assignment.archetype.name : null,
+    strongest: results.strongest ? results.strongest.text : null,
+    contradiction: results.contradiction
+  };
+  saveSession(store(), sessionRecords, at, { mode: deckMode, date: todayStr(), summary });
+  Analytics.track('session_complete', { mode: deckMode, correct });
+  if (deckMode === 'challenge') Analytics.track('challenge_complete');
+  renderResults(results, profile, sessionRecords, acc);
+  show('final');
+}
+
+function renderResults(results, profile, sessionRecords, acc) {
+  $('fScore').innerHTML = `${score}<small> / 1000</small>`;
+  const answered = sessionRecords.length;
+  $('fStats').textContent = `${acc}% accuracy · ${correct} correct · ${answered - correct} incorrect · ${skipped} skipped · best streak ${best}`;
+  const matched = sessionRecords.filter(r => r.personalChoice === r.majority).length;
+  $('fChoices').textContent = `Your own choices matched the simulated majority ${matched} of ${answered} times. This is not scored.`;
+  const dots = $('dots');
+  dots.textContent = '';
+  sessionRecords.forEach((r, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot ' + (r.correct ? 'ok' : 'no');
+    d.title = `Question ${i + 1}: ${r.correct ? 'correct' : 'incorrect'}`;
+    dots.appendChild(d);
+  });
+  const bar = $('fAccBar');
+  bar.style.width = '0%';
+  requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = acc + '%'; }));
+
+  // Archetype block
+  const a = results.archetype;
+  $('archName').textContent = a ? a.name : 'Not unlocked yet';
+  $('archSentence').textContent = a ? a.sentence : results.reason;
+  $('archConfidence').textContent = 'Confidence: ' + results.sample.level + ' · ' + results.sample.answers + ' answers';
+  $('archStatus').textContent = results.sample.note || `Based on ${results.sample.answers} answers and ${results.sample.predictions} predictions across ${sessionsNow().length} saved session${sessionsNow().length === 1 ? '' : 's'}.`;
+
+  renderDimensions($('resDims'), profile);
+  $('resStrong').textContent = results.strongest ? results.strongest.text : 'No strong pattern yet. Your answers sit close to the middle on every measure we can read.';
+  $('resContra').textContent = results.contradiction || 'No contradiction in your answers. Nothing unexpected is supported by the evidence yet.';
+
+  const ex = $('resExamples');
+  ex.textContent = '';
+  if (results.examples.length === 0) ex.appendChild(el('p', 'note', 'No examples to show from this session.'));
+  results.examples.forEach(e => {
+    const p = el('p', 'example');
+    p.append(document.createTextNode('“'), el('q', '', e.question), document.createTextNode('” '));
+    p.append(document.createTextNode(e.differs
+      ? `You chose "${e.chose}". The simulated crowd majority was "${e.majority}" (${e.majorityPct}%).`
+      : `You matched the simulated majority: "${e.chose}" (${e.majorityPct}%).`));
+    ex.appendChild(p);
+  });
+
+  $('resBlind').textContent = a ? a.blindSpot : 'Not enough answers yet to suggest a blind spot.';
+  $('resQ').textContent = a ? a.question : 'Play a few more sessions to unlock a reflective question.';
+
+  // Share card
+  $('cardArch').textContent = a ? a.name : 'Still forming';
+  $('cardInsight').textContent = results.contradiction || (results.strongest ? results.strongest.text : (a ? a.sentence : 'Discover your own profile.'));
+  const ready = results.dimensions.filter(d => d.key !== 'perspectiveShifting');
+  $('cardScores').textContent = ready.length
+    ? ready.map(d => `${DIMENSION_DEFS.find(x => x.key === d.key).label}: ${pct(d.value)}`).join(' · ')
+    : 'Scores appear after 10 answers.';
+  $('shareMsg').textContent = '';
+  $('resultEyebrow').textContent = deckMode === 'daily' ? 'Today’s challenge result' : deckMode === 'challenge' ? 'Challenge result' : 'Your result';
+}
+
+function renderDimensions(container, profile) {
+  container.textContent = '';
+  DIMENSION_DEFS.forEach(def => {
+    const d = profile.dimensions.find(x => x.key === def.key);
+    const row = el('div', 'dim');
+    const head = el('div', 'dim-head');
+    head.append(el('b', '', def.label));
+    const defText = el('p', 'dim-def', def.definition);
+    row.append(head, defText);
+    if (d && d.ready) {
+      head.append(el('span', '', pct(d.value)));
+      const track = el('div', 'track');
+      const band = el('div', 'range');
+      band.style.left = (d.ci.low * 100) + '%';
+      band.style.width = ((d.ci.high - d.ci.low) * 100) + '%';
+      const tick = el('div', 'tick');
+      tick.style.left = (d.value * 100) + '%';
+      track.append(band, tick);
+      const meta = el('p', 'dim-meta', `95% range ${pct(d.ci.low)} to ${pct(d.ci.high)} · n = ${d.n}`);
+      row.append(track, meta);
+    } else {
+      head.append(el('span', '', 'Not enough data'));
+      const why = d && d.reason ? d.reason : d ? `Needs ${d.minN} answers to show a score. You have ${d.n}.` : '';
+      if (d && d.key === 'decisionConsistency') row.append(el('p', 'dim-meta', `Needs ${DIMENSION_RULES.decisionConsistency.minGroups} trade-off groups with ${DIMENSION_RULES.decisionConsistency.minPerGroup}+ answers each. You have ${d.n}.`));
+      else if (d && d.key === 'riskOrientation') row.append(el('p', 'dim-meta', `Needs ${d.minN} risk-tagged answers. You have ${d.n}.`));
+      else row.append(el('p', 'dim-meta', why));
+    }
+    container.appendChild(row);
+  });
+}
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+
+// ---- Sharing ----
+// Native share when available, clipboard fallback. Reports success only when it actually happened.
+async function shareOrCopy(data, method, successCopy, doneMsg) {
+  const msg = $('shareMsg');
+  msg.textContent = '';
+  if (navigator.share) {
+    try {
+      await navigator.share(data);
+      msg.textContent = doneMsg || 'Shared.';
+      Analytics.track('share_result', { method: 'native' });
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(data.text + ' ' + data.url);
+    msg.textContent = successCopy;
+    Analytics.track('share_result', { method: 'clipboard' });
+  } catch (err) {
+    msg.textContent = 'Sharing is not available in this browser. Copy the text manually: ' + data.text + ' ' + data.url;
+    Analytics.track('share_result', { method: 'failed' });
+  }
+}
+
+function shareResult() {
+  const insight = $('cardInsight').textContent;
+  const arch = $('cardArch').textContent;
+  shareOrCopy(
+    { title: 'Crowdsy', text: `I got "${arch}" on Crowdsy. ${insight}`, url: PAGE_URL },
+    'result',
+    'Result copied to clipboard. It contains only your archetype and one insight.',
+    'Shared.'
+  );
+}
+
+function challengeFriend() {
+  const ids = deck.map(q => q.id);
+  const link = PAGE_URL + '?deck=' + encodeURIComponent(ids.join(','));
+  shareOrCopy(
+    { title: 'Crowdsy challenge', text: 'Take my 10-question Crowdsy challenge. Your answers stay yours; my result is not shown.', url: link },
+    'challenge',
+    'Challenge link copied. It contains question IDs only, not your answers.',
+    'Challenge sent.'
+  );
+}
+
+// ---- Profile and history ----
+function renderProfile() {
+  const st = storageState();
+  $('dataNotice').hidden = !(st.corrupt || !st.available);
+  $('dataNotice').textContent = !st.available
+    ? 'Local storage is unavailable in this browser, so your profile cannot be saved here.'
+    : 'Saved history could not be read and was ignored. Your next finished session will replace it.';
+  const sessions = sessionsNow();
+  const body = $('profBody');
+  $('profEmpty').hidden = sessions.length > 0;
+  body.hidden = sessions.length === 0;
+  if (sessions.length === 0) return;
+
+  const all = allRecords(sessions);
+  const profile = computeProfile(all, QUESTION_BANK, DIMENSION_MAP, DIMENSION_RULES, DATA_SOURCE);
+  const progress = buildProgress(sessions, QUESTION_BANK, DIMENSION_MAP, DIMENSION_RULES);
+  const assignment = assignArchetype(profile);
+  $('profMeta').textContent = `${sessions.length} saved session${sessions.length === 1 ? '' : 's'} · ${profile.sample.answers} answers · ${profile.sample.predictions} predictions`;
+  $('profArch').textContent = assignment.archetype ? assignment.archetype.name : 'Not unlocked yet';
+  $('profArchStatus').textContent = assignment.reason || assignment.archetype.sentence;
+  renderDimensions($('profDims'), profile);
+  $('profAcc').textContent = progress.accuracy.n
+    ? `${pct(progress.accuracy.value)} of your predictions matched the simulated crowd majority (${progress.accuracy.k} of ${progress.accuracy.n}).`
+    : 'No predictions recorded yet.';
+  const unl = $('profUnlocks');
+  unl.textContent = '';
+  if (progress.unlocks.length === 0) unl.appendChild(el('li', 'note', 'No dimension has enough data yet.'));
+  progress.unlocks.forEach(u => unl.appendChild(el('li', '', `${u.label} became readable after session ${u.sessionIndex + 1}.`)));
+  const arch = $('profArchs');
+  arch.textContent = '';
+  if (progress.archetypes.length === 0) arch.appendChild(el('li', 'note', 'No archetype yet.'));
+  progress.archetypes.forEach(a => arch.appendChild(el('li', '', `${a.name} (first seen in session ${a.sessionIndex + 1})`)));
+  const rules = $('ruleList');
+  rules.textContent = '';
+  ARCHETYPES.forEach(a => rules.appendChild(el('li', '', `${a.name}: ${a.rule}`)));
+}
+
+function renderHistory() {
+  const st = storageState();
+  const notice = $('histNotice');
+  notice.hidden = !(st.corrupt || !st.available);
+  notice.textContent = !st.available
+    ? 'Local storage is unavailable in this browser, so history cannot be kept here.'
+    : 'Saved history could not be read and was ignored.';
+  const sessions = sessionsNow();
+  $('histEmpty').hidden = sessions.length > 0;
+  const list = $('histList');
+  list.textContent = '';
+  sessions.slice().reverse().forEach(s => {
+    const li = el('li');
+    const sum = s.summary;
+    const when = s.at ? new Date(s.at).toLocaleString() : 'Date not saved';
+    const mode = s.mode === 'daily' ? 'Today’s challenge' : s.mode === 'challenge' ? 'Challenge' : s.mode ? 'Solo' : 'Solo (older session)';
+    const d = document.createElement('details');
+    const sm = document.createElement('summary');
+    sm.textContent = `${when} · ${mode} · ${sum ? sum.score + ' / 1000' : 'score not saved'}`;
+    d.appendChild(sm);
+    if (sum) {
+      d.appendChild(el('p', '', `${sum.accuracy}% accuracy · ${sum.correct} of ${sum.answered} correct · ${sum.skipped} skipped · best streak ${sum.best}`));
+      if (sum.archetype) d.appendChild(el('p', '', `Archetype: ${sum.archetype}`));
+      if (sum.strongest) d.appendChild(el('p', '', `Strongest pattern: ${sum.strongest}`));
+      if (sum.contradiction) d.appendChild(el('p', '', `Unexpected finding: ${sum.contradiction}`));
+    } else {
+      d.appendChild(el('p', '', 'Details were not saved for this older session. Its answers still count toward your profile.'));
+    }
+    li.appendChild(d);
+    list.appendChild(li);
+  });
+}
+
+function resetProfile() {
+  const ok = window.confirm('Delete your saved sessions and local event log from this browser? This cannot be undone.');
+  if (!ok) return;
+  const cleared = clearSessions(store());
+  let events = true;
+  try { if (store()) store().removeItem(ANALYTICS_STORAGE_KEY); } catch (e) { events = false; }
+  $('resetMsg').textContent = cleared && events
+    ? 'Local profile cleared. Your next finished session starts a new profile.'
+    : 'Could not fully clear local data in this browser.';
+  renderProfile();
+}
+
+// ---- Daily and challenge ----
+function renderLanding() {
+  const today = todayStr();
+  const doneToday = sessionsNow().some(s => s.mode === 'daily' && s.date === today);
+  $('dailyNote').textContent = doneToday
+    ? 'Today’s challenge is done. You can replay it any time; nothing is lost by skipping a day.'
+    : 'Today’s challenge is the same 10 questions for everyone today. Optional, and there is no streak to lose.';
+}
+
+function readChallengeDeck() {
+  const ids = new URLSearchParams(window.location.search).get('deck');
+  if (!ids) return null;
+  const res = deckFromIds(QUESTION_BANK, ids.split(',').map(s => s.trim()).filter(Boolean));
+  return res.ok ? res.deck : 'invalid';
+}
+
+// ---- Wiring ----
+$('startBtn').addEventListener('click', () => startGame('solo'));
+$('dailyBtn').addEventListener('click', () => startGame('daily'));
+$('challengeStart').addEventListener('click', () => startGame('challenge'));
+$('lockBtn').addEventListener('click', lockIn);
+$('skipBtn').addEventListener('click', skip);
+$('nextBtn').addEventListener('click', next);
+$('againBtn').addEventListener('click', () => { Analytics.track('replay'); startGame('solo'); });
+$('profileBtn').addEventListener('click', () => { renderProfile(); show('profile'); });
+$('shareBtn').addEventListener('click', shareResult);
+$('challengeBtn').addEventListener('click', challengeFriend);
+$('navProfile').addEventListener('click', () => { renderProfile(); show('profile'); });
+$('navHistory').addEventListener('click', () => { renderHistory(); show('history'); });
+$('homeBtn').addEventListener('click', () => { renderLanding(); show('landing'); });
+$('profBackBtn').addEventListener('click', () => { renderLanding(); show('landing'); });
+$('histBackBtn').addEventListener('click', () => { renderLanding(); show('landing'); });
+$('resetBtn').addEventListener('click', resetProfile);
+document.addEventListener('keydown', e => {
+  if ($('qView').hidden || busy || locked || !$('game').classList.contains('on')) return;
+  const n = Number(e.key);
+  if (n >= 1 && n <= 4 && current() && current().o[n - 1] !== undefined) selectPick(n - 1);
+});
+
+// ---- Boot ----
+(function boot() {
+  const sample = QUESTION_BANK.find(q => q.id === 'EP01');
+  $('sampleQ').textContent = sample.q;
+  drawBars($('sampleBars'), sample, true);
+  Analytics.track('landing_view');
+  const parsed = readChallengeDeck();
+  if (parsed === 'invalid') {
+    $('challengeBanner').hidden = true;
+  } else if (parsed) {
+    challengeDeck = parsed;
+    $('challengeBanner').hidden = false;
+    Analytics.track('challenge_visit');
+  }
+  renderLanding();
+  const st = storageState();
+  if (!st.available) $('dailyNote').textContent += ' Local storage is unavailable here, so results will not be kept after you close this page.';
+})();
+</script>
+</body>
+</html>

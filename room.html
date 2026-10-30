@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crowdsy · Play with friends</title>
+<style>
+:root{--bg:#151515;--ink:#F3F1EC;--mute:#8F8E88;--line:#2E2E2C;--lime:#D2FF3A;--soft:#CFCDC6}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 56px;min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.brand{font-size:13px;letter-spacing:.24em;font-weight:700;color:var(--ink);text-decoration:none}
+.brand b{color:var(--lime)}
+.back{color:var(--mute);font-size:14px}
+.eyebrow{font-size:12px;letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin:0 0 12px}
+h1{font-family:Georgia,"Iowan Old Style",serif;font-weight:400;font-size:clamp(40px,9vw,80px);line-height:.98;letter-spacing:-.02em;margin:24px 0 16px}
+h1 em{color:var(--lime);font-style:italic}
+h2{font-family:Georgia,"Iowan Old Style",serif;font-weight:400;font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 12px}
+.lede{color:var(--soft);font-size:17px;line-height:1.5;margin:0 0 28px}
+.screen{display:flex;flex-direction:column;gap:6px;flex:1}
+.block{border-top:1px solid var(--line);padding-top:24px;margin-top:24px}
+label{display:block;font-size:13px;color:var(--mute);letter-spacing:.06em;margin:14px 0 6px}
+input[type=text],input[type=search],input{width:100%;background:#1c1c1a;border:1px solid #3a3a37;color:var(--ink);padding:14px 16px;font:500 17px "Helvetica Neue",Arial,sans-serif}
+input:focus{outline:2px solid var(--lime);outline-offset:1px}
+.primary{background:var(--lime);color:#111;border:0;padding:16px 26px;font:700 16px "Helvetica Neue",Arial,sans-serif;cursor:pointer;margin-top:14px}
+.primary:disabled{opacity:.28;cursor:not-allowed}
+.ghost{background:none;color:var(--ink);border:1px solid #444;padding:15px 22px;font:600 15px "Helvetica Neue",Arial,sans-serif;cursor:pointer}
+.ghost:disabled{opacity:.35;cursor:not-allowed}
+.link{background:none;border:0;color:var(--mute);font:500 14px "Helvetica Neue",Arial,sans-serif;text-decoration:underline;cursor:pointer;padding:8px 0}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.modes{display:grid;gap:10px;margin-top:8px}
+.mode{border:1px solid var(--line);padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.mode.on{border-color:var(--lime)}
+.mode strong{font-size:17px;font-weight:700}
+.mode small{display:block;color:var(--mute);font-size:13px;margin-top:4px}
+.tag{display:inline-block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);border:1px solid #444;padding:4px 8px;margin-left:6px}
+.tag.on{color:#111;background:var(--lime);border-color:var(--lime)}
+.tag.off{color:var(--ink);border-color:#666}
+.error{color:#FFB4A8;background:#2a1a18;border:1px solid #5a2a24;padding:12px 14px;margin:14px 0;font-size:15px}
+.banner{color:#111;background:var(--lime);padding:10px 14px;font-weight:700;font-size:14px;margin-bottom:14px}
+.note{font-size:14px;color:var(--mute);line-height:1.5;margin:10px 0 0}
+.code{font-family:Georgia,serif;font-size:clamp(44px,10vw,72px);letter-spacing:.12em;color:var(--lime);margin:0 0 6px}
+.invite{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.invite input{flex:1;min-width:200px}
+.players{list-style:none;padding:0;margin:14px 0 0}
+.player{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--line)}
+.player-name{font-size:18px;font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.progress-line{font-size:12px;letter-spacing:.18em;color:var(--mute);text-transform:uppercase;margin:0 0 14px}
+.cat{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin:0 0 10px}
+.qtext{font-family:Georgia,serif;font-size:clamp(28px,6vw,46px);line-height:1.1;margin:0 0 22px}
+.opts{display:grid;gap:12px;margin-bottom:8px}
+.opt{display:block;width:100%;text-align:left;background:none;border:1px solid var(--line);color:var(--ink);padding:20px 22px;font:500 clamp(18px,3vw,22px) "Helvetica Neue",Arial,sans-serif;cursor:pointer}
+.opt:hover:not(:disabled){border-color:#5A5A56}
+.opt[aria-pressed="true"]{background:var(--lime);color:#111;border-color:var(--lime)}
+.opt:disabled{cursor:default}
+.opt:disabled:not([aria-pressed="true"]){opacity:.35}
+.row{margin-bottom:18px}
+.lbl{display:flex;justify-content:space-between;gap:12px;font-size:17px;margin-bottom:8px}
+.pct{font-variant-numeric:tabular-nums;font-weight:700}
+.track{height:14px;background:var(--line)}
+.fill{height:100%;width:0;background:#E9E7E1;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.fill.maj{background:var(--lime)}
+.rev-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;width:100%}
+.rev-detail{width:100%;color:var(--soft);font-size:14px;margin:6px 0 0}
+.board-row{display:grid;grid-template-columns:36px 1fr auto;gap:6px 12px;align-items:baseline}
+.rank{font-family:Georgia,serif;font-size:24px;color:var(--lime)}
+.score{font-variant-numeric:tabular-nums;font-weight:700}
+.streak{grid-column:2 / 4;color:var(--mute);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+.empty{color:var(--mute);font-size:15px;margin:12px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:520px){ .primary,.ghost{width:100%;text-align:center} .actions{flex-direction:column;align-items:stretch} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html">CROWD<b>SY</b></a>
+    <a class="back" href="index.html">Solo game</a>
+  </header>
+  <div id="connection" class="error" role="status" hidden></div>
+  <div id="error" class="error" role="alert" hidden></div>
+
+  <!-- Entry -->
+  <section id="entry" class="screen" aria-labelledby="entryTitle">
+    <p class="eyebrow">Multiplayer · Discord friendly</p>
+    <h1 id="entryTitle">Read the <em>room.</em></h1>
+    <p class="lede">Play together on a call. Everyone predicts secretly, then chooses. The room decides the majority. Your friends join with a code.</p>
+
+    <div class="modes" aria-label="Game modes">
+      <div class="mode on"><div><strong>Predict the Room</strong><small>Predict the majority, then choose for yourself. Live now.</small></div><span class="tag on">Available</span></div>
+      <div class="mode"><div><strong>Most Likely To</strong><small>Vote for a friend. Not built yet.</small></div><button class="ghost mode-off" type="button" disabled>Not available yet</button></div>
+      <div class="mode"><div><strong>Who Said It?</strong><small>Guess who wrote each anonymous answer. Not built yet.</small></div><button class="ghost mode-off" type="button" disabled>Not available yet</button></div>
+    </div>
+
+    <div class="block">
+      <h2>Create a room</h2>
+      <form id="createForm">
+        <label for="createName">Your name (shown to the room)</label>
+        <input id="createName" type="text" maxlength="20" autocomplete="off" required>
+        <button class="primary" type="submit">Create room</button>
+      </form>
+    </div>
+
+    <div class="block">
+      <h2>Join a room</h2>
+      <p id="joinNotice" class="note"></p>
+      <form id="joinForm">
+        <label for="joinCode">Room code</label>
+        <input id="joinCode" type="text" maxlength="5" autocomplete="off" style="text-transform:uppercase" required>
+        <label for="joinName">Your name</label>
+        <input id="joinName" type="text" maxlength="20" autocomplete="off" required>
+        <button class="primary" type="submit">Join room</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Lobby -->
+  <section id="lobby" class="screen" hidden aria-labelledby="lobbyTitle">
+    <p class="eyebrow">Lobby</p>
+    <div class="code" id="lobbyCode" aria-label="Room code"></div>
+    <p class="note">Share this link in your Discord call. Anyone with the link can join until the room closes.</p>
+    <div class="invite">
+      <input id="inviteLink" type="text" readonly aria-label="Invite link">
+      <button class="ghost" id="copyInvite" type="button">Copy invite link</button>
+    </div>
+    <p id="copyMsg" class="note" role="status"></p>
+
+    <div class="block">
+      <h2 id="lobbyTitle">Players</h2>
+      <ul id="players" class="players" aria-live="polite"></ul>
+      <p id="lobbyHint" class="note"></p>
+      <div class="actions">
+        <button class="ghost" id="readyBtn" type="button">I am ready</button>
+        <button class="primary" id="startBtn" type="button">Start game</button>
+      </div>
+    </div>
+    <div class="actions"><button class="link leave" type="button">Leave room</button></div>
+  </section>
+
+  <!-- Play -->
+  <section id="play" class="screen" hidden aria-live="polite">
+    <p class="progress-line" id="roundLabel"></p>
+    <p class="cat" id="stageLabel"></p>
+    <p class="note" id="stageHint" style="margin:0 0 18px"></p>
+    <h2 class="qtext" id="qText"></h2>
+    <div class="opts" id="options" role="group" aria-label="Answer options"></div>
+    <p id="lockedNote" class="note" hidden></p>
+    <p id="pendingNote" class="note"></p>
+    <div class="actions">
+      <button class="primary" id="lockBtn" type="button" disabled>Lock</button>
+      <button class="ghost" id="hostReveal" type="button" hidden>Reveal now</button>
+    </div>
+    <div class="actions"><button class="link leave" type="button">Leave room</button></div>
+  </section>
+
+  <!-- Reveal -->
+  <section id="reveal" class="screen" hidden aria-live="polite">
+    <p class="progress-line" id="revRound"></p>
+    <p class="cat">Reveal</p>
+    <h2 class="qtext" id="revQ"></h2>
+    <p class="note" id="revSource"></p>
+    <div id="revBars" style="margin-top:14px"></div>
+    <p id="revMajority" class="note" style="font-size:17px;color:var(--ink)"></p>
+    <div class="block">
+      <ul id="revPlayers" class="players"></ul>
+    </div>
+    <div class="actions">
+      <button class="primary" id="nextBtn" type="button" hidden>Next round</button>
+      <p id="revWait" class="note" hidden>Waiting for the host to continue.</p>
+    </div>
+    <div class="actions"><button class="link leave" type="button">Leave room</button></div>
+  </section>
+
+  <!-- Finished -->
+  <section id="finished" class="screen" hidden aria-labelledby="finTitle">
+    <p class="eyebrow">Final scoreboard</p>
+    <h2 id="finTitle">Who read the room best?</h2>
+    <ul id="board" class="players"></ul>
+    <div class="actions">
+      <button class="primary" id="rematchBtn" type="button" hidden>Play again</button>
+      <button class="link leave" type="button">Leave room</button>
+    </div>
+  </section>
+</div>
+
+<script src="analytics.js"></script>
+<script src="room-client.js"></script>
+</body>
+</html>
